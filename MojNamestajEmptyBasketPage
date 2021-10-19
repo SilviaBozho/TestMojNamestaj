@@ -1,0 +1,44 @@
+package pages;
+
+import helpers.BaseHelper;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class MojNamestajEmptyBasketPage extends BaseHelper
+
+{
+    @FindBy (xpath = "/html/body/div[1]/div[2]/section/div/div/div/div[1]/form/table/tbody/tr[2]/td[1]/div")
+    WebElement obrisiKorpuButton;
+
+    public String praznaKorpaTekst;
+
+
+    WebDriver driver;
+    public MojNamestajEmptyBasketPage (WebDriver driver)
+    {
+        this.driver = driver;
+        PageFactory.initElements(driver, this);
+    }
+
+    private void clickOnObrisiKorpuButton()
+    {
+        obrisiKorpuButton.click();
+    }
+
+    private void  emptyBasketCheck()
+    {
+        wdWait.until(ExpectedConditions.visibilityOfElementLocated(By.className("section_header")));
+        WebElement emptyBasket = driver.findElement(By.className("section_header"));
+        praznaKorpaTekst = emptyBasket.getText();
+    }
+
+    public void removeProductFromBasket()
+    {
+        clickOnObrisiKorpuButton();
+        emptyBasketCheck();
+    }
+}
