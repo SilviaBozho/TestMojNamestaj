@@ -1,0 +1,88 @@
+package pages;
+
+import helpers.BaseHelper;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.util.List;
+
+public class MojNamestajHomePage extends BaseHelper
+{
+    @FindBy (className = "glove")
+    WebElement shopButton;
+    @FindBy (className = "chosen-choices")
+    WebElement izaberiButton;
+    @FindBy (id = "category_id")
+    WebElement kategorija;
+    @FindBy (id = "category_id_chosen")
+    WebElement pronadjiButton;
+    @FindBy (id = "product_listing")
+    WebElement productsHolder;
+
+
+    WebDriver driver;
+    public MojNamestajHomePage (WebDriver driver)
+    {
+        this.driver = driver;
+        PageFactory.initElements(driver,this);
+    }
+
+    private void navigateToHomePage ()
+    {
+       driver.get("https://www.mojnamestaj.rs/");
+    }
+    private  void clickOnShopButton ()
+    {
+        shopButton.click();
+    }
+    private void clickOnIzaberiButton()
+    {
+        wdWait.until(ExpectedConditions.visibilityOf(izaberiButton));
+        izaberiButton.click();
+    }
+    private void izaberiKategoriju()
+    {
+        wdWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("category_id_chosen")));
+        WebElement kategorija = driver.findElement(By.className("chosen-drop"));
+        List<WebElement> kategorije = kategorija.findElements(By.tagName("li"));
+        WebElement product = kategorije.get(0);
+        product.click();
+    }
+    private void clickOnPronadjiButton()
+    {
+        wdWait.until(ExpectedConditions.visibilityOfElementLocated(By.className("search-choice")));
+        js.executeScript("arguments[0].click();", pronadjiButton);
+    }
+
+    private void clickOnProduct()
+    {
+        wdWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("product_listing")));
+
+        List<WebElement> products = productsHolder.findElements(By.className("row"));
+        System.out.println("Broj artikala:"+products.size());
+        WebElement chair = products.get(3);
+
+        js.executeScript("arguments[0].click();",chair);
+
+
+
+    }
+
+
+
+
+    public void navigateToChooseProduct()
+    {
+        navigateToHomePage();
+        clickOnShopButton();
+        clickOnIzaberiButton();
+        izaberiKategoriju();
+        clickOnPronadjiButton();
+        clickOnProduct();
+    }
+
+}
