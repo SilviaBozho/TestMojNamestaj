@@ -1,0 +1,58 @@
+package pages;
+
+import helpers.BaseHelper;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class MojNamestajCartPage extends BaseHelper
+{
+
+
+    public String ukupnoText;
+    public String cenaText;
+    public String imeArtikla;
+
+
+    WebDriver driver;
+    public MojNamestajCartPage (WebDriver driver)
+    {
+        this.driver = driver;
+        PageFactory.initElements(driver, this);
+    }
+    private void chooseQuantity()
+    {
+        wdWait.until(ExpectedConditions.presenceOfElementLocated(By.className("cart-table")));
+
+        WebElement plusButton = driver.findElement(By.className("plus"));
+        plusButton.click();
+
+    }
+    private void updateCart()
+    {
+        WebElement updateCartButton = driver.findElement(By.xpath("/html/body/div[1]/div[2]/section/div/div/div/div[1]/form/table/tbody/tr[2]/td[2]/div[1]/input"));
+        js.executeScript("arguments[0].click();", updateCartButton);
+
+        WebElement price = driver.findElement(By.xpath("/html/body/div[1]/div[2]/section/div/div/div/div[1]/form/table/tbody/tr[1]/td[4]"));
+        cenaText = price.getText();
+        System.out.println("cena:"+cenaText);
+
+        WebElement total = driver.findElement(By.xpath("/html/body/div[1]/div[2]/section/div/div/div/div[1]/form/table/tbody/tr[1]/td[6]"));
+        ukupnoText = total.getText();
+        System.out.println("ukupno:"+ukupnoText);
+
+        WebElement name = driver.findElement(By.xpath("/html/body/div[1]/div[2]/section/div/div/div/div[1]/form/table/tbody/tr[1]/td[3]/a"));
+        imeArtikla = name.getText();
+        System.out.println("ime artikla: "+imeArtikla);
+    }
+    public void orderCart()
+    {
+        chooseQuantity();
+        updateCart();
+    }
+
+
+}
