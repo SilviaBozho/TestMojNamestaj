@@ -1,0 +1,122 @@
+package tests;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import pages.*;
+
+import java.util.List;
+import java.util.Locale;
+
+public class MojNamestajTest extends BaseTest {
+    @Test
+    public void loginWithValidCredentials() throws InterruptedException {
+        String username = "Glorijazo";
+        String password = "Glorija23mojnamestaj";
+
+        MojNamestajLoginPage prijaviMe = new MojNamestajLoginPage(driver);
+        prijaviMe.login(username, password);
+
+        wdWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/div[1]/section[1]/div/div/div[2]/span[4]")));
+        WebElement odjaviMeButton = driver.findElement(By.xpath("/html/body/div[1]/section[1]/div/div/div[2]/span[4]"));
+        WebElement pozdravButton = driver.findElement(By.xpath("/html/body/div[1]/section[1]/div/div/div[2]/span[1]"));
+
+        Assert.assertTrue("Odjavi me button is not displayed", odjaviMeButton.getText().contains("Odjavi me"));
+        Assert.assertTrue("Pozdrav is not located", pozdravButton.getText().contains("Pozdrav, Glorija"));
+
+
+        Thread.sleep(3000);
+
+
+    }
+
+
+    @Test
+    public void loginWithInvalidCredentials() throws InterruptedException {
+        String username = "Gloriazo";
+        String password = "Gloria23mojnamestaj";
+
+        MojNamestajLoginPage prijaviMe = new MojNamestajLoginPage(driver);
+        prijaviMe.login(username, password);
+
+        wdWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/div[2]/section[5]/div/div/div/div/div[1]/div")));
+        WebElement redBanner = driver.findElement(By.xpath("/html/body/div[2]/section[5]/div/div/div/div/div[1]/div"));
+
+        Assert.assertTrue("Logged in with invalid credentials", redBanner.getText().contains("We do not have that user!"));
+
+
+        Thread.sleep(3000);
+
+    }
+
+    @Test
+    public void mojNamestajSearchTest() throws InterruptedException {
+        String term = "Lazy bag";
+        MojNamestajSearchPage searchPage = new MojNamestajSearchPage(driver);
+        searchPage.mojNamestajSearch(term);
+        wdWait.until(ExpectedConditions.presenceOfElementLocated(By.id("product_listing")));
+        WebElement searchResults = driver.findElement(By.id("product_listing"));
+        List<WebElement> articles = searchResults.findElements(By.className("row"));
+        System.out.println("Broj artikala:" + articles.size());
+        Assert.assertTrue(searchResults.getText().contains(term));
+        Assert.assertEquals(" There is no 26 articles", 26, articles.size());
+
+
+        Thread.sleep(3000);
+
+    }
+
+
+    @Test
+    public void chooseProductTest() throws InterruptedException {
+
+        MojNamestajHomePage chooseCategory = new MojNamestajHomePage(driver);
+        chooseCategory.navigateToChooseProduct();
+
+
+        MojNamestajProductPage productPage = new MojNamestajProductPage(driver);
+        productPage.addToCart();
+
+        wdWait.until(ExpectedConditions.presenceOfElementLocated(By.className("product-name")));
+        WebElement productName = driver.findElement(By.className("product-name"));
+
+        MojNamestajCartPage cartPage = new MojNamestajCartPage(driver);
+        cartPage.orderCart();
+
+        String cenaText = cartPage.cenaText.replace("RSD", "").replace(",", "").trim();
+        double cena = Double.parseDouble(cenaText);
+        System.out.println(+cena);
+        String ukupnoText = cartPage.ukupnoText.replace("RSD", "").replace(",", "").trim();
+        double ukupno = Double.parseDouble(ukupnoText);
+        System.out.println(+ukupno);
+
+        Assert.assertEquals(ukupno, cena * 2, 0.01);
+
+
+        Thread.sleep(3000);
+    }
+
+
+    @Test
+    public void emptyBasketTest() throws InterruptedException {
+
+        MojNamestajProductPage productPage = new MojNamestajProductPage(driver);
+        productPage.addToCart();
+
+        MojNamestajCartPage cartPage = new MojNamestajCartPage(driver);
+        cartPage.orderCart();
+
+
+        MojNamestajEmptyBasketPage praznaKorpa = new MojNamestajEmptyBasketPage(driver);
+        praznaKorpa.removeProductFromBasket();
+
+
+
+       Assert.assertTrue(praznaKorpa.praznaKorpaTekst.contains("PRAZNA KORPA"));
+
+
+        Thread.sleep(3000);
+    }
+}
