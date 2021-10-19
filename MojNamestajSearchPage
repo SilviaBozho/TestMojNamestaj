@@ -1,0 +1,43 @@
+package pages;
+
+import helpers.BaseHelper;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class MojNamestajSearchPage extends BaseHelper
+{
+    @FindBy(id="s")
+    WebElement searchBox;
+    @FindBy (id="searchsubmit")
+    WebElement magnifyingGlassButton;
+
+    WebDriver driver;
+    public MojNamestajSearchPage (WebDriver driver)
+    {
+        this.driver = driver;
+        PageFactory.initElements(driver,this);
+    }
+    private void navigateToMojNamestaj()
+    {
+        driver.get ("https://www.mojnamestaj.rs/");
+    }
+    private void enterSearchTermInSearchField(String searchTerm)
+    {
+        wdWait.until(ExpectedConditions.visibilityOf(searchBox));
+        searchBox.sendKeys(searchTerm);
+    }
+    private void clickOnMagnifyingGlassButton()
+    {
+        magnifyingGlassButton.click();
+    }
+    public void mojNamestajSearch(String tearm)
+    {
+        navigateToMojNamestaj();
+        enterSearchTermInSearchField(tearm);
+        clickOnMagnifyingGlassButton();
+    }
+
+}
