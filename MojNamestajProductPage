@@ -1,0 +1,39 @@
+package pages;
+
+import helpers.BaseHelper;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class MojNamestajProductPage extends BaseHelper
+{
+    @FindBy (className = "addtocart")
+    WebElement cartButton;
+
+    WebDriver driver;
+    public MojNamestajProductPage (WebDriver driver)
+    {
+        this.driver = driver;
+        PageFactory.initElements(driver,this);
+    }
+    private void navigateToProductPage()
+    {
+        driver.get("https://www.mojnamestaj.rs/proizvod/barska-stolica-charlie-crna-862");
+    }
+    private void clikOnCartButton()
+
+    {
+        wdWait.until(ExpectedConditions.visibilityOfElementLocated(By.className("addtocart")));
+        System.out.println(driver.findElement(By.className("section_header")).getText());
+
+        cartButton.click();
+    }
+    public void addToCart()
+    {
+        navigateToProductPage();
+        clikOnCartButton();
+    }
+}
